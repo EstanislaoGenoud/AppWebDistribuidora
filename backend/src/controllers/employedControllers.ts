@@ -1,0 +1,91 @@
+import {Request, Response} from 'express';
+import { saveEmployedToDB, getAllEmployedFromDB, getEmployedByIdFromDB } from '../services/employedServices';
+
+export const getAllEmployed = async (req: Request, res: Response) => {
+  try {
+    const empleados = await getAllEmployedFromDB();
+    res.json(empleados);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener empleados', error });
+  }
+};
+export const getEmployed=(req:Request, res:Response)=>{
+  const id = parseInt(req.params.id);
+  if (isNaN(id)) {
+    res.status(400).json({ message: 'ID inválido' });
+    return;
+  }
+
+  getEmployedByIdFromDB(id)
+    .then((empleado) => {
+      if (!empleado) {
+        res.status(404).json({ message: 'Empleado no encontrado' });
+      } else {
+        res.json(empleado);
+      }
+    })
+    .catch((error) => {
+      console.error('Error al obtener el empleado:', error);
+      res.status(500).json({ message: 'Error al obtener el empleado', error });
+    });
+
+  // Placeholder response
+  //
+}
+export const createEmployed = async (req: Request, res: Response): Promise<void> => {
+  try {
+    console.log('Solicitud recibida para crear usuario:', req.body);
+    const { nombre, apellido, dni, fechaNacimiento, genero, email, localidad, calle, nroCalle, idCargo } = req.body;
+
+    // Convertir a números
+    const dniNum = Number(dni);
+    const nroCalleNum = Number(nroCalle);
+    const idCargoNum = Number(idCargo);
+
+    if (
+      !nombre || !apellido ||
+      isNaN(dniNum) ||
+      !fechaNacimiento ||
+      !genero || !email ||
+      !localidad || !calle ||
+      isNaN(nroCalleNum) ||
+      isNaN(idCargoNum)
+    ) {
+      res.status(400).json({
+        message: 'Faltan datos',
+        detalle: { nombre, apellido, dni, fechaNacimiento, genero, email, localidad, calle, nroCalle, idCargo }
+      });
+      return;
+    }
+
+    const fechaNacimientoDate = new Date(fechaNacimiento);
+    if (isNaN(fechaNacimientoDate.getTime())) {
+      res.status(400).json({ message: 'Formato de fecha inválido. Debe ser YYYY-MM-DD' });
+      return;
+    }
+
+    await saveEmployedToDB(
+      nombre,
+      apellido,
+      dniNum,
+      fechaNacimientoDate,
+      genero,
+      email,
+      localidad,
+      calle,
+      nroCalleNum,
+      idCargoNum
+    );
+
+    res.status(201).json({ message: 'Empleado creado correctamente' });
+  } catch (error) {
+    console.error('Error al crear el empleado:', error);
+    res.status(500).json({ message: 'Error al crear el empleado', error });
+  }
+};
+export const updateEmployed=(req:Request, res:Response)=>{
+	res.json({message: 'Actualizar un empleado'});
+}
+export const deleteEmployed=(req:Request, res:Response)=>{
+	res.json({message: 'Eliminar un empleado'});
+}

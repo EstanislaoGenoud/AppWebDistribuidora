@@ -1,0 +1,64 @@
+import db from '../config/db';
+import { RowDataPacket } from 'mysql2';
+interface Empleado extends RowDataPacket {
+  idEmpleado: number;
+  nombre: string;
+  apellido: string;
+  dni: number;
+  fechaNacimiento: Date;
+  genero: string;
+  email: string;
+  localidad: string;
+  calle: string;
+  nroCalle: number;
+  idCargo: number;
+}
+export async function saveEmployedToDB(
+  nombre: string,
+  apellido: string,
+  dni: number,
+  fechaNacimiento: Date,
+  genero: string,
+  email: string,
+  localidad: string,
+  calle: string,
+  nroCalle: number,
+  idCargo: number  // 👈 Agregamos este parámetro
+) {
+  try {
+    const [cargoRows] = await db.query(
+      'SELECT * FROM Cargo WHERE idCargo = ?',
+      [idCargo]
+    );
+    if((cargoRows as any[]).length === 0) {
+      throw new Error(`Cargo con id ${idCargo} no encontrado`);
+    }
+    const [result] = await db.query(
+      'INSERT INTO Empleado (nombre, apellido, dni, fechaNacimiento, genero, email, localidad, calle, nroCalle, idCargo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [nombre, apellido, dni, fechaNacimiento, genero, email, localidad, calle, nroCalle, idCargo]
+    );
+    console.log('Empleado insertado:', result);
+    return result;
+  } catch (error) {
+    console.error('Error saving employed to database:', error);
+    throw error;
+  }
+}
+export async function getAllEmployedFromDB() {
+  try {
+    const [rows] = await db.query('SELECT * FROM Empleado');
+    return rows;
+  } catch (error) {
+    console.error('Error fetching all employed from database:', error);
+    throw error;
+  }
+}
+export async function getEmployedByIdFromDB(id: number) {
+  try {
+    const [rows] = await db.query<Empleado[]>('SELECT * FROM Empleado WHERE idEmpleado = ?', [id]);
+    return rows[0];
+  } catch (error) {
+    console.error('Error fetching employed by ID:', error);
+    throw error;
+  }
+}

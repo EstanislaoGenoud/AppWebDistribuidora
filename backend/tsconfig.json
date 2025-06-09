@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist", // Aquí se indica que los archivos js generados irán a la carpeta 'dist'
+    "target": "ES6",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*.ts"]
+}

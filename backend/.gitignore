@@ -1,0 +1,8 @@
+# Ignora dependencias
+**/node_modules/
+
+# Ignora archivos compilados
+**/dist/
+
+# Ignora variables de entorno
+**/.env
