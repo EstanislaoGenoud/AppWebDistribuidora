@@ -54,7 +54,7 @@ export async function getUserByIdFromDB(id: number) {
 export async function updateUserInDB(id: number, nombreUsuario: string, password_hash: string, email: string, rol: string) {
   try {
     const [result] = await db.query(
-      'UPDATE Usuarios SET NombreUsuario = ?, password_hash = ?, email = ?, rol = ? WHERE id = ?',
+      'UPDATE Usuarios SET NombreUsuario = ?, password_hash = ?, email = ?, rol = ? WHERE idUsuario = ?',
       [nombreUsuario, password_hash, email, rol, id]
     );
     return result;
@@ -65,7 +65,7 @@ export async function updateUserInDB(id: number, nombreUsuario: string, password
 }
 export async function deleteUserFromDB(id: number) {
   try {
-    const [result] = await db.query('DELETE FROM Usuarios WHERE id = ?', [id]);
+    const [result] = await db.query('DELETE FROM Usuarios WHERE idUsuario = ?', [id]);
     return result;
   } catch (error) {
     console.error('Error deleting user from database:', error);
