@@ -1,7 +1,7 @@
 import {Request, Response} from 'express';
 import bcrypt from 'bcryptjs';
 import { saveUserToDB} from '../services/userServices';
-import { getAllUsersFromDB, getUserByIdFromDB } from '../services/userServices';
+import { getAllUsersFromDB, getUserByIdFromDB, deleteUserFromDB, updateUserInDB, getUserByUsernameFromDB } from '../services/userServices';
 
 
 export const getAllUsers=(req:Request, res:Response)=>{
@@ -42,6 +42,49 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
+    // Validación de contraseña
+    if (
+      password_hash.length < 8 ||
+      password_hash.length > 20 ||
+      !/^[a-zA-Z0-9]+$/.test(password_hash)
+    ) {
+      res.status(400).json({
+        message:
+          'La contraseña debe tener entre 8 y 20 caracteres y no contener caracteres especiales'
+      });
+      return;
+    }
+
+    // Validación de nombre de usuario
+    if (!/^[a-zA-Z0-9]+$/.test(NombreUsuario)) {
+      res.status(400).json({
+        message: 'El nombre de usuario solo puede contener letras y números'
+      });
+      return;
+    }
+
+    // Validación de email
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
+      res.status(400).json({ message: 'El email no es válido' });
+      return;
+    }
+
+    // Validación de rol
+    if (rol !== 'admin' && rol !== 'user' && rol !== 'developer') {
+      res.status(400).json({
+        message: 'Rol inválido. Debe ser "admin", "user" o "developer"'
+      });
+      return;
+    }
+
+    // Verificar si el usuario ya existe
+    const existingUser = await getUserByUsernameFromDB(NombreUsuario);
+    if (existingUser) {
+      res.status(400).json({ message: 'El usuario ya existe' });
+      return;
+    }
+
+    // Hashear la contraseña
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password_hash, saltRounds);
 
@@ -54,6 +97,25 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
   }
 };
 export const updateUser=(req:Request, res:Response)=>{
+  const id = parseInt(req.params.id);
+  if (isNaN(id)) {
+    res.status(400).json({ message: 'ID inválido' });
+    return;
+  }
+  const { NombreUsuario, password_hash, email, rol } = req.body;
+  if (!NombreUsuario || !password_hash || !email || !rol) {
+    res.status(400).json({ message: 'Faltan datos' });
+    return;
+  }
+  updateUserInDB(id, NombreUsuario, password_hash, email, rol)
+    .then(() => {
+      res.json({ message: 'Usuario actualizado correctamente' });
+    })
+    .catch((error) => {
+      console.error('Error al actualizar el usuario:', error);
+      res.status(500).json({ message: 'Error al actualizar el usuario', error });
+    });
+
   res.json({message: 'Actualizar un usuario'});
 }
 export const deleteUser=(req:Request, res:Response)=>{

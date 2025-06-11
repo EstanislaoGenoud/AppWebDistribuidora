@@ -7,6 +7,7 @@ interface Usuario extends RowDataPacket {
   email: string;
   rol: string;
 }
+
 export async function saveUserToDB(nombreUsuario: string, password_hash: string, email: string, rol: string) {
   try {
     const [result] = await db.query(
@@ -16,6 +17,18 @@ export async function saveUserToDB(nombreUsuario: string, password_hash: string,
     return result;
   } catch (error) {
     console.error('Error saving user to database:', error);
+    throw error;
+  }
+}
+export async function getUserByUsernameFromDB(NombreUsuario: string) {
+  try {
+    const [rows] = await db.query<Usuario[]>(
+      'SELECT * FROM Usuarios WHERE NombreUsuario = ?',
+      [NombreUsuario]
+    );
+    return rows[0]; // Devuelve el primer usuario encontrado (o undefined si no existe)
+  } catch (error) {
+    console.error('Error fetching user by username from database:', error);
     throw error;
   }
 }
@@ -30,13 +43,14 @@ export async function getAllUsersFromDB() {
 }
 export async function getUserByIdFromDB(id: number) {
   try {
-    const [rows] = await db.query<Usuario[]>('SELECT * FROM Usuarios WHERE id = ?', [id]);
+    const [rows] = await db.query<Usuario[]>('SELECT * FROM Usuarios WHERE idUsuario = ?', [id]);
     return rows[0];
   } catch (error) {
     console.error('Error fetching user by ID from database:', error);
     throw error;
   }
 }
+
 export async function updateUserInDB(id: number, nombreUsuario: string, password_hash: string, email: string, rol: string) {
   try {
     const [result] = await db.query(

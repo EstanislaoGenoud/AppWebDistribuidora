@@ -1,5 +1,12 @@
-import {Request, Response} from 'express';
-import { saveEmployedToDB, getAllEmployedFromDB, getEmployedByIdFromDB } from '../services/employedServices';
+import { Request, Response } from 'express';
+import { 
+  saveEmployedToDB, 
+  getAllEmployedFromDB, 
+  getEmployedByIdFromDB, 
+  deleteEmployedFromDB, 
+  updateEmployedInDB 
+} from '../services/employedServices';
+
 
 export const getAllEmployed = async (req: Request, res: Response) => {
   try {
@@ -9,7 +16,8 @@ export const getAllEmployed = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error al obtener empleados', error });
   }
 };
-export const getEmployed=(req:Request, res:Response)=>{
+
+export const getEmployed = (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) {
     res.status(400).json({ message: 'ID inválido' });
@@ -28,16 +36,13 @@ export const getEmployed=(req:Request, res:Response)=>{
       console.error('Error al obtener el empleado:', error);
       res.status(500).json({ message: 'Error al obtener el empleado', error });
     });
+};
 
-  // Placeholder response
-  //
-}
 export const createEmployed = async (req: Request, res: Response): Promise<void> => {
   try {
-    console.log('Solicitud recibida para crear usuario:', req.body);
+    console.log('Solicitud recibida para crear empleado:', req.body);
     const { nombre, apellido, dni, fechaNacimiento, genero, email, localidad, calle, nroCalle, idCargo } = req.body;
 
-    // Convertir a números
     const dniNum = Number(dni);
     const nroCalleNum = Number(nroCalle);
     const idCargoNum = Number(idCargo);
@@ -83,9 +88,29 @@ export const createEmployed = async (req: Request, res: Response): Promise<void>
     res.status(500).json({ message: 'Error al crear el empleado', error });
   }
 };
-export const updateEmployed=(req:Request, res:Response)=>{
-	res.json({message: 'Actualizar un empleado'});
-}
-export const deleteEmployed=(req:Request, res:Response)=>{
-	res.json({message: 'Eliminar un empleado'});
-}
+
+export const updateEmployed = (req: Request, res: Response) => {
+  res.json({ message: 'Actualizar un empleado' });
+};
+
+export const deleteEmployed = (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  if (isNaN(id)) {
+    res.status(400).json({ message: 'ID inválido' });
+    return;
+  }
+
+  deleteEmployedFromDB(id)
+    .then((result) => {
+      const affected = (result as any).affectedRows ?? (result as any).rowCount;
+      if (affected === 0) {
+        res.status(404).json({ message: 'Empleado no encontrado' });
+      } else {
+        res.json({ message: 'Empleado eliminado correctamente' });
+      }
+    })
+    .catch((error) => {
+      console.error('Error al eliminar el empleado:', error);
+      res.status(500).json({ message: 'Error al eliminar el empleado', error });
+    });
+};
