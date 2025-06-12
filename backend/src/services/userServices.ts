@@ -7,7 +7,7 @@ interface Usuario extends RowDataPacket {
   email: string;
   rol: string;
 }
-
+// Funciones para interactuar con la base de datos relacionadas con los usuarios
 export async function saveUserToDB(nombreUsuario: string, password_hash: string, email: string, rol: string) {
   try {
     const [result] = await db.query(
@@ -20,6 +20,7 @@ export async function saveUserToDB(nombreUsuario: string, password_hash: string,
     throw error;
   }
 }
+// Obtener un usuario por nombre de usuario
 export async function getUserByUsernameFromDB(NombreUsuario: string) {
   try {
     const [rows] = await db.query<Usuario[]>(
@@ -32,6 +33,7 @@ export async function getUserByUsernameFromDB(NombreUsuario: string) {
     throw error;
   }
 }
+// Obtener todos los usuarios
 export async function getAllUsersFromDB() {
   try {
     const [rows] = await db.query('SELECT * FROM Usuarios');
@@ -41,6 +43,7 @@ export async function getAllUsersFromDB() {
     throw error;
   }
 }
+// Obtener los mediante ID
 export async function getUserByIdFromDB(id: number) {
   try {
     const [rows] = await db.query<Usuario[]>('SELECT * FROM Usuarios WHERE idUsuario = ?', [id]);
@@ -50,7 +53,7 @@ export async function getUserByIdFromDB(id: number) {
     throw error;
   }
 }
-
+// Actualizar un usuario por ID
 export async function updateUserInDB(id: number, nombreUsuario: string, password_hash: string, email: string, rol: string) {
   try {
     const [result] = await db.query(
@@ -63,6 +66,7 @@ export async function updateUserInDB(id: number, nombreUsuario: string, password
     throw error;
   }
 }
+// Eliminar un usuario por ID
 export async function deleteUserFromDB(id: number) {
   try {
     const [result] = await db.query('DELETE FROM Usuarios WHERE idUsuario = ?', [id]);

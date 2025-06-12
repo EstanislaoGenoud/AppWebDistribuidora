@@ -13,6 +13,7 @@ interface Empleado extends RowDataPacket {
   nroCalle: number;
   idCargo: number;
 }
+// Guardar un empleado en la base de datos
 export async function saveEmployedToDB(
   nombre: string,
   apellido: string,
@@ -44,6 +45,7 @@ export async function saveEmployedToDB(
     throw error;
   }
 }
+// Obtener todos los empleados
 export async function getAllEmployedFromDB() {
   try {
     const [rows] = await db.query('SELECT * FROM Empleado');
@@ -53,6 +55,7 @@ export async function getAllEmployedFromDB() {
     throw error;
   }
 }
+// Obtener un empleado por ID
 export async function getEmployedByIdFromDB(id: number) {
   try {
     const [rows] = await db.query<Empleado[]>('SELECT * FROM Empleado WHERE idEmpleado = ?', [id]);
@@ -62,6 +65,7 @@ export async function getEmployedByIdFromDB(id: number) {
     throw error;
   }
 }
+// Actualizar un empleado por ID
 export async function updateEmployedInDB(
   id: number,
   nombre: string,
@@ -86,6 +90,7 @@ export async function updateEmployedInDB(
     throw error;
   }
 }
+// Eliminar un empleado por ID
 export async function deleteEmployedFromDB(id: number) {
   try {
     const [result] = await db.query('DELETE FROM Empleado WHERE idEmpleado = ?', [id]);
