@@ -1,7 +1,8 @@
+// src/routes/providers.ts
 import { Router } from "express";
 import * as providerController from "../controllers/providerControllers";
 
-const router=Router();
+const router = Router();
 
 router.get('/', providerController.getAllProviders);
 router.get('/:id', providerController.getProvider);

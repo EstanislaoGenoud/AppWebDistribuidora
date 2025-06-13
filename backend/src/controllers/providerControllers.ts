@@ -36,7 +36,7 @@ export const getProvider= async (req:Request, res:Response)=>{
   }
 }
 
-export const createProvider = async (req: Request, res: Response) => {
+export const createProvider = async (req: Request, res: Response): Promise<void> => {
   try {
     const { legajoProv, nombre, localidad, cuit, calle, nroCalle } = req.body;
 
@@ -45,7 +45,8 @@ export const createProvider = async (req: Request, res: Response) => {
       legajoProv === undefined || nombre === undefined || localidad === undefined ||
       cuit === undefined || calle === undefined || nroCalle === undefined
     ) {
-      return res.status(400).json({ message: 'Faltan datos para crear el proveedor' });
+      res.status(400).json({ message: 'Faltan datos para crear el proveedor' });
+      return;
     }
 
     // Validación de tipos de datos
@@ -57,27 +58,29 @@ export const createProvider = async (req: Request, res: Response) => {
       typeof calle !== 'string' ||
       typeof nroCalle !== 'number'
     ) {
-      return res.status(400).json({ message: 'Datos inválidos para crear el proveedor' });
+      res.status(400).json({ message: 'Datos inválidos para crear el proveedor' });
+      return;
     }
 
-    // 🔍 Validación si ya existe el proveedor con ese legajoProv
+    // Verificación de existencia
     try {
       const existing = await getProviderByIdFromDB(legajoProv);
       if (existing) {
-        return res.status(409).json({ message: `Ya existe un proveedor con legajoProv ${legajoProv}` });
+        res.status(409).json({ message: `Ya existe un proveedor con legajoProv ${legajoProv}` });
+        return;
       }
     } catch (err: any) {
-      // Si entra aquí y el error es "Proveedor con ID X no encontrado", lo ignoramos y seguimos
       if (!err.message.includes('no encontrado')) {
         console.error('Error al verificar existencia del proveedor:', err);
-        return res.status(500).json({ message: 'Error interno al verificar proveedor' });
+        res.status(500).json({ message: 'Error interno al verificar proveedor' });
+        return;
       }
     }
 
-    // Si no existe, lo guardamos
-    const result = await saveProviderToDB(legajoProv, nombre, localidad, cuit, calle, nroCalle);
+    // Guardado en base de datos
+    await saveProviderToDB(legajoProv, nombre, localidad, cuit, calle, nroCalle);
 
-    return res.status(201).json({
+    res.status(201).json({
       message: 'Proveedor creado correctamente',
       data: { legajoProv, nombre, localidad, cuit, calle, nroCalle }
     });
