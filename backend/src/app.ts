@@ -5,6 +5,7 @@ import productRoutes from './routes/product';
 import clientRoutes from './routes/clients'
 import user from './routes/users';
 import employedRoutes from './routes/employed';
+import providerRoutes from './routes/providers';
 
 const app=express();
 app.use(express.json());
@@ -19,6 +20,7 @@ app.use(apiKeyMiddleware);
 // Using routes
 app.use('/api/users', user);
 app.use('/api/products', productRoutes);
+app.use('/api/providers', providerRoutes);
 app.use('/api/clients', clientRoutes);
 app.use('/api/employed', employedRoutes);
 // Starting the server

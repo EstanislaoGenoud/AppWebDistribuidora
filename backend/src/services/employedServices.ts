@@ -7,7 +7,7 @@ interface Empleado extends RowDataPacket {
   dni: number;
   fechaNacimiento: Date;
   genero: string;
-  email: string;
+    email: string;
   localidad: string;
   calle: string;
   nroCalle: number;

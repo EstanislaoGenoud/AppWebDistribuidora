@@ -3,7 +3,7 @@ import * as providerController from "../controllers/providerControllers";
 
 const router=Router();
 
-router.get('/', providerController.getProviders);
+router.get('/', providerController.getAllProviders);
 router.get('/:id', providerController.getProvider);
 router.post('/', providerController.createProvider);
 router.put('/:id', providerController.updateProvider);

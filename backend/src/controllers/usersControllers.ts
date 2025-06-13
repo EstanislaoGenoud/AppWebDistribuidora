@@ -1,8 +1,14 @@
 import {Request, Response} from 'express';
 import bcrypt from 'bcryptjs';
 import { saveUserToDB} from '../services/userServices';
-import { getAllUsersFromDB, getUserByIdFromDB, deleteUserFromDB, updateUserInDB, getUserByUsernameFromDB } from '../services/userServices';
-
+import { // Imports para manejar usuarios
+  getAllUsersFromDB,
+  getUserByIdFromDB, 
+  deleteUserFromDB, 
+  updateUserInDB, 
+  getUserByUsernameFromDB 
+} from '../services/userServices';
+// Controladores para manejar las operaciones de usuarios
 // Obtener todos los usuarios
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
@@ -136,6 +142,4 @@ export const deleteUser=(req:Request, res:Response)=>{
       console.error('Error al eliminar el usuario:', error);
       res.status(500).json({ message: 'Error al eliminar el usuario', error });
     });
-
-  res.json({message: 'Eliminar un usuario'});
 }
