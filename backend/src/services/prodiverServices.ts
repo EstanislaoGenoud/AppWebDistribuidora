@@ -2,7 +2,6 @@ import db from '../config/db';
 import { RowDataPacket } from 'mysql2';
 // Definición de la interfaz Proveedor
 interface Proveedor extends RowDataPacket {
-  legajoProv: number;
   nombre: string;
   localidad: string;
   cuit: string;
@@ -38,7 +37,7 @@ export async function getProviderByIdFromDB(id: number) {
 }
 // Guardar un proveedor en la base de datos
 export async function saveProviderToDB(
-  legajoProv: number,
+  
   nombre: string,
   localidad: string,
   cuit: string,
@@ -47,8 +46,8 @@ export async function saveProviderToDB(
 ){
   try{
     const [results]=await db.query(
-      'INSERT INTO Proveedor (legajoProv, nombre, localidad, cuit, calle, nroCalle) VALUES (?, ?, ?, ?, ?, ?)',
-      [legajoProv, nombre, localidad, cuit, calle, nroCalle]
+      'INSERT INTO Proveedor (nombre, localidad, cuit, calle, nroCalle) VALUES (?, ?, ?, ?, ?)',
+      [nombre, localidad, cuit, calle, nroCalle]
     );
     console.log('Proveedor insertado:', results);
     return results;

@@ -15,6 +15,7 @@ export const apiKeyMiddleware = (req: Request, res: Response, next: NextFunction
 
   if (apiKey !== API_KEY) {
     res.status(403).json({ message: 'API Key inválida' });
+    console.error('API Key inválida:', apiKey);
     return;
   }
 

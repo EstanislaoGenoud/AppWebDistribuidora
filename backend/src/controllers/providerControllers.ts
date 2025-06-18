@@ -38,11 +38,11 @@ export const getProvider= async (req:Request, res:Response)=>{
 
 export const createProvider = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { legajoProv, nombre, localidad, cuit, calle, nroCalle } = req.body;
+    const {nombre, localidad, cuit, calle, nroCalle } = req.body;
 
     // Validación básica de datos requeridos
     if (
-      legajoProv === undefined || nombre === undefined || localidad === undefined ||
+      nombre === undefined || localidad === undefined ||
       cuit === undefined || calle === undefined || nroCalle === undefined
     ) {
       res.status(400).json({ message: 'Faltan datos para crear el proveedor' });
@@ -51,7 +51,6 @@ export const createProvider = async (req: Request, res: Response): Promise<void>
 
     // Validación de tipos de datos
     if (
-      typeof legajoProv !== 'number' ||
       typeof nombre !== 'string' ||
       typeof localidad !== 'string' ||
       typeof cuit !== 'string' ||
@@ -63,26 +62,13 @@ export const createProvider = async (req: Request, res: Response): Promise<void>
     }
 
     // Verificación de existencia
-    try {
-      const existing = await getProviderByIdFromDB(legajoProv);
-      if (existing) {
-        res.status(409).json({ message: `Ya existe un proveedor con legajoProv ${legajoProv}` });
-        return;
-      }
-    } catch (err: any) {
-      if (!err.message.includes('no encontrado')) {
-        console.error('Error al verificar existencia del proveedor:', err);
-        res.status(500).json({ message: 'Error interno al verificar proveedor' });
-        return;
-      }
-    }
 
     // Guardado en base de datos
-    await saveProviderToDB(legajoProv, nombre, localidad, cuit, calle, nroCalle);
+    await saveProviderToDB(nombre, localidad, cuit, calle, nroCalle);
 
     res.status(201).json({
       message: 'Proveedor creado correctamente',
-      data: { legajoProv, nombre, localidad, cuit, calle, nroCalle }
+      data: {nombre, localidad, cuit, calle, nroCalle }
     });
 
   } catch (error) {
