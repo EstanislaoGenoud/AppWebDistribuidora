@@ -60,9 +60,6 @@ export const createProvider = async (req: Request, res: Response): Promise<void>
       res.status(400).json({ message: 'Datos inválidos para crear el proveedor' });
       return;
     }
-
-    // Verificación de existencia
-
     // Guardado en base de datos
     await saveProviderToDB(nombre, localidad, cuit, calle, nroCalle);
 
@@ -76,7 +73,6 @@ export const createProvider = async (req: Request, res: Response): Promise<void>
     res.status(500).json({ message: 'Error al crear proveedor' });
   }
 };
-
 export const updateProvider=(req:Request, res:Response)=>{
   const id = parseInt(req.params.id);
   if( isNaN(id)){
@@ -97,14 +93,23 @@ export const updateProvider=(req:Request, res:Response)=>{
       res.status(500).json({message: 'Error al actualizar el proveedor', error});
     });
 }
-export const deleteProvider=(req:Request, res:Response)=>{
-  const id=parseInt(req.params.id);
-  if(isNaN(id)){
+export const deleteProvider = (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  if (isNaN(id)) {
     res.status(400).json({ message: 'ID inválido' });
     return;
   }
+
   deleteProviderFromDB(id)
-    .then(()=>{
-      res.status(200).json({message: 'Proveedor eliminado correctamente'});
+    .then(() => {
+      res.status(200).json({ message: 'Proveedor eliminado correctamente' });
+    })
+    .catch((error) => {
+      console.error('Error al eliminar el proveedor:', error.message);
+      if (error.message.includes('no encontrado')) {
+        res.status(404).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: 'Error al eliminar el proveedor', error });
+      }
     });
-}
+};

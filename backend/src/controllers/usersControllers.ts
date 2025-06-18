@@ -140,6 +140,11 @@ export const deleteUser=(req:Request, res:Response)=>{
     })
     .catch((error) => {
       console.error('Error al eliminar el usuario:', error);
-      res.status(500).json({ message: 'Error al eliminar el usuario', error });
+      if(error.message.includes('no encontrado')){
+        res.status(404).json({ message: error.message });
+        return;
+      }else{
+        res.status(500).json({ message: 'Error al eliminar el usuario', error });
+      }
     });
 }
