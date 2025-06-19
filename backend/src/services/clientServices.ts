@@ -12,6 +12,7 @@ interface Cliente extends RowDataPacket {
   nomNegocio: string;
 }
 export async function saveClientToDB(
+  idCliente: string,
   nombre: string,
   telefono: string,
   cuit: string,
@@ -23,8 +24,8 @@ export async function saveClientToDB(
 ) {
   try {
     const [result] = await db.query(
-      'INSERT INTO Clientes (nombre, telefono, cuit, localidad, calle, nroCalle, apellido, nomNegocio) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [nombre, telefono, cuit, localidad, calle, nroCalle, apellido, nomNegocio]
+      'INSERT INTO Cliente (idCliente, nombre, telefono, cuit, localidad, calle, nroCalle, apellido, nomNegocio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [ idCliente, nombre, telefono, cuit, localidad, calle, nroCalle, apellido, nomNegocio]
     );
     return result;
   } catch (error) {
@@ -34,16 +35,16 @@ export async function saveClientToDB(
 }
 export async function getAllClientsFromDB() {
   try {
-    const [rows] = await db.query<Cliente[]>('SELECT * FROM Clientes');
+    const [rows] = await db.query<Cliente[]>('SELECT * FROM Cliente');
     return rows;
   } catch (error) {
     console.error('Error fetching clients from database:', error);
     throw error;
   }
 }
-export async function getClientByIdFromDB(id: number) {
+export async function getClientByIdFromDB(id: string) {
   try {
-    const [rows] = await db.query<Cliente[]>('SELECT * FROM Clientes WHERE idCliente = ?', [id]);
+    const [rows] = await db.query<Cliente[]>('SELECT * FROM Cliente WHERE idCliente = ?', [id]);
     return rows[0];
   } catch (error) {
     console.error('Error fetching client by ID from database:', error);
@@ -72,9 +73,9 @@ export async function updateClientInDB(
     throw error;
   }
 }
-export async function deleteClientFromDB(id: number) {
+export async function deleteClientFromDB(id: string) {
   try {
-    const [result] = await db.query('DELETE FROM Clientes WHERE idCliente = ?', [id]);
+    const [result] = await db.query('DELETE FROM Cliente WHERE idCliente = ?', [id]);
     return result;
   } catch (error) {
     console.error('Error deleting client from database:', error);
