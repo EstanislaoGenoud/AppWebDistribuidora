@@ -10,7 +10,9 @@ import providerRoutes from './routes/providers';
 const app=express();
 app.use(express.json());
 app.get('/',  (req, res) => {
-	res.send('Welcome to the API: Use /api/users, /api/products, or /api/clients to access the respective endpoints.');
+  console.log('Root endpoint hit');
+  res.send('API funcionando');
+	//res.send('Welcome to the API: Use /api/users, /api/products, or /api/clients to access the respective endpoints.');
 });
 
 // Middleware to handle API key authentication

@@ -3,10 +3,10 @@ import * as productController from '../controllers/productControllers';
 
 const router = Router();
 
-router.get('/products', productController.getAllProducts);
-router.get('/products/:id', productController.getProduct);
-router.post('/products', productController.createProduct);
-router.put('/products/:id', productController.updateProduct);
-router.delete('/products/:id', productController.deleteProduct);
+router.get('/', productController.getAllProducts);
+router.get('/:id', productController.getProduct);
+router.post('/', productController.createProduct);
+router.put('/:id', productController.updateProduct);
+router.delete('/:id', productController.deleteProduct);
 
 export default router;
