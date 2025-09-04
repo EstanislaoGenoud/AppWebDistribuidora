@@ -1,7 +1,7 @@
 import express from 'express';
 import { apiKeyMiddleware } from './middleware/apiKeyMiddleware';
 // Importing routes
-import productRoutes from './routes/product';
+import productRoutes from './routes/products';
 import clientRoutes from './routes/clients'
 import user from './routes/users';
 import employedRoutes from './routes/employed';

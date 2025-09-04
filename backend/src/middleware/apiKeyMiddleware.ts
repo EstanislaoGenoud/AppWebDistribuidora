@@ -1,23 +1,27 @@
-import { Request, Response, NextFunction } from 'express';
-import dotenv from 'dotenv';
+import { Request, Response, NextFunction } from "express";
+import dotenv from "dotenv";
 
 dotenv.config();
 
-const API_KEY = process.env.API_KEY;
+export function apiKeyMiddleware(req: Request, res: Response, next: NextFunction): void {
+  const apiKey = req.header("x-api-key");
+  const validApiKey = process.env.API_KEY;
 
-export const apiKeyMiddleware = (req: Request, res: Response, next: NextFunction): void => {
-  const apiKey = req.headers['x-api-key'] as string;
+  if (!validApiKey) {
+    console.error("⚠️ No se encontró API_KEY en el archivo .env");
+    res.status(500).json({ message: "Error interno: API Key no configurada" });
+    return;
+  }
 
   if (!apiKey) {
-    res.status(401).json({ message: 'API Key requerida' });
+    res.status(401).json({ message: "Falta la API Key en el header" });
     return;
   }
 
-  if (apiKey !== API_KEY) {
-    res.status(403).json({ message: 'API Key inválida' });
-    console.error('API Key inválida:', apiKey);
+  if (apiKey !== validApiKey) {
+    res.status(401).json({ message: "API Key inválida" });
     return;
   }
 
-  next();
-};
+  next(); // sigue con la ruta
+}
