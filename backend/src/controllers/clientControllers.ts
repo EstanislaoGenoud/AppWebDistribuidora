@@ -13,7 +13,7 @@ export const getAllClients= async (req:Request, res:Response)=>{
     const clients=await getAllClientsFromDB();
     res.json(clients);
   }catch(error){
-    res.json({message: 'Obtener todos los clientes'});
+    res.json({message: 'Error al obtener todos los clientes'});
   }
 }
 // Obtener un cliente por ID 

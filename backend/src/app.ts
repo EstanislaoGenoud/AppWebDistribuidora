@@ -7,6 +7,7 @@ import clientRoutes from './routes/clients';
 import user from './routes/users';
 import employedRoutes from './routes/employed';
 import providerRoutes from './routes/providers';
+import accountClientRoutes from './routes/accountClients';
 
 const app=express();
 app.use(express.json());
@@ -24,6 +25,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/providers', providerRoutes);
 app.use('/api/clients', clientRoutes);
 app.use('/api/employed', employedRoutes);
+app.use('/api/accountClient', accountClientRoutes);
 // Starting the server
 app.listen(3000, () => {
   console.log('Servidor corriendo en puerto 3000');
