@@ -1,8 +1,9 @@
 import express from 'express';
-import { apiKeyMiddleware } from './middleware/apiKeyMiddleware';
+//import { apiKeyMiddleware } from './middleware/apiKeyMiddleware';
+import { authMiddleware } from './middleware/authMiddleware';
 // Importing routes
 import productRoutes from './routes/products';
-import clientRoutes from './routes/clients'
+import clientRoutes from './routes/clients';
 import user from './routes/users';
 import employedRoutes from './routes/employed';
 import providerRoutes from './routes/providers';
@@ -10,13 +11,11 @@ import providerRoutes from './routes/providers';
 const app=express();
 app.use(express.json());
 app.get('/',  (req, res) => {
-  console.log('Root endpoint hit');
-  res.send('API funcionando');
-	//res.send('Welcome to the API: Use /api/users, /api/products, or /api/clients to access the respective endpoints.');
+	res.send('Welcome to the API: Use /api/users, /api/products, or /api/clients to access the respective endpoints.');
 });
 
 // Middleware to handle API key authentication
-app.use(apiKeyMiddleware);
+app.use(authMiddleware);
 
 
 // Using routes

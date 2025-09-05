@@ -35,7 +35,7 @@ export const getProvider= async (req:Request, res:Response)=>{
     res.status(500).json({ error: 'Error al obtener proveedor' });
   }
 }
-
+// Crear un nuevo proveedor
 export const createProvider = async (req: Request, res: Response): Promise<void> => {
   try {
     const {nombre, localidad, cuit, calle, nroCalle } = req.body;
@@ -73,6 +73,7 @@ export const createProvider = async (req: Request, res: Response): Promise<void>
     res.status(500).json({ message: 'Error al crear proveedor' });
   }
 };
+// Actualizar un proveedor por ID
 export const updateProvider=(req:Request, res:Response)=>{
   const id = parseInt(req.params.id);
   if( isNaN(id)){
@@ -93,6 +94,7 @@ export const updateProvider=(req:Request, res:Response)=>{
       res.status(500).json({message: 'Error al actualizar el proveedor', error});
     });
 }
+// Eliminar un proveedor por ID
 export const deleteProvider = (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) {

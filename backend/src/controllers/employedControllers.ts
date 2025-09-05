@@ -200,7 +200,6 @@ export const updateEmployed = (req: Request, res: Response) => {
         .json({ message: "Error al actualizar el empleado", error });
     });
 };
-
 export const deleteEmployed = (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) {

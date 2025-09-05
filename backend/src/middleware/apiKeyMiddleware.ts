@@ -22,6 +22,5 @@ export function apiKeyMiddleware(req: Request, res: Response, next: NextFunction
     res.status(401).json({ message: "API Key inválida" });
     return;
   }
-
   next(); // sigue con la ruta
 }

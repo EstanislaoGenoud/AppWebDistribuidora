@@ -93,7 +93,7 @@ export const updateClient=(req:Request, res:Response)=>{
     });
   res.json({message: 'Actualizar un cliente'});
 }
-
+// Eliminar un cliente por ID
 export const deleteClient=(req:Request, res:Response)=>{
   const id =(req.params.id);
   if(!id || typeof id !== 'string') {

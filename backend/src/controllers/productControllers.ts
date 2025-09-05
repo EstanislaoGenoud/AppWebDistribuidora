@@ -9,7 +9,6 @@ import {
 // Controladores para manejar las operaciones de productos
 // Obtener todos los productos
 export const getAllProducts = async (req: Request, res: Response) => {
-  console.log('getAllProducts called');
   try {
     const products = await getAllProductsFromDB();
     res.json(products);
@@ -18,6 +17,7 @@ export const getAllProducts = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error al obtener los productos", error });
   }
 };
+// Obtener un producto por ID
 export const getProduct = (req: Request, res: Response) => {
   const id = req.params.id;
   if (!id) {
@@ -37,6 +37,7 @@ export const getProduct = (req: Request, res: Response) => {
       res.status(500).json({ message: "Error al obtener el producto", error });
     });
 };
+// Crear un nuevo producto
 export const createProduct = async (req: Request, res: Response) => {
   try {
     const {
@@ -83,6 +84,7 @@ export const createProduct = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error al crear el producto", error });
   }
 };
+// Actualizar un producto existente
 export const updateProduct =async (req: Request, res: Response) => {
   try{
     const id = req.params.id;
@@ -133,7 +135,25 @@ export const updateProduct =async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error al actualizar el producto", error });
   }
 };
+// Eliminar un producto
 export const deleteProduct = (req: Request, res: Response) => {
-  res.json({ message: "Eliminar un producto" });
+  const id=req.params.id;
+  if(!id){
+    res.status(400).json({message: "ID inválido"});
+    return;
+  }
+  deleteProductFromDB(id)
+    .then((result)=>{
+      const affected=(result as any).affectedRows ?? (result as any).rowCount;
+      if(affected===0){
+        res.status(404).json({message: "Producto no encontrado"});
+      } else {
+        res.json({message: "Producto eliminado correctamente"});
+      }
+    })
+    .catch((error)=>{
+      console.error("Error al eliminar el producto:", error);
+      res.status(500).json({message: "Error al eliminar el producto", error});
+    });
 };
 
