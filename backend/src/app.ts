@@ -9,6 +9,7 @@ import employedRoutes from './routes/employed';
 import providerRoutes from './routes/providers';
 import accountClientRoutes from './routes/accountClients';
 import accountProviderRoutes from './routes/accountProviders';
+import salesRoutes from './routes/sales';
 
 const app=express();
 app.use(express.json());
@@ -28,6 +29,7 @@ app.use('/api/clients', clientRoutes);
 app.use('/api/employed', employedRoutes);
 app.use('/api/accountClient', accountClientRoutes);
 app.use('/api/accountProvider', accountProviderRoutes);
+app.use('/api/sales', salesRoutes);
 // Starting the server
 app.listen(3000, () => {
   console.log('Servidor corriendo en puerto 3000');

@@ -1,12 +1,10 @@
 import { Router } from "express";
-import * as salesController from "../controllers/salesControllers";
-
+import * as salesDetailesControllers from '../controllers/salesDetailesControllers';
 const router=Router();
 
-router.get('/', salesController.getAllSales);
-router.get('/:id', salesController.getSale);
-router.post('/', salesController.createSale);
-router.put('/:id', salesController.updateSale);
-router.delete('/:id', salesController.deleteSale);
+router.get('/', salesDetailesControllers.getAllSalesDetailes);
+router.get('/:id', salesDetailesControllers.getSalesDetailes);
+router.post('/', salesDetailesControllers.createSalesDetailes);
+router.delete('/:id', salesDetailesControllers.deleteSalesDetailes);
 
 export default router;
