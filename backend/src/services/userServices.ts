@@ -2,17 +2,18 @@ import db from '../config/db';
 import { RowDataPacket } from 'mysql2';
 interface Usuario extends RowDataPacket {
   id: number;
+  uidFirebase:string;
   NombreUsuario: string;
   password_hash: string;
   email: string;
   rol: string;
 }
 // Funciones para interactuar con la base de datos relacionadas con los usuarios
-export async function saveUserToDB(nombreUsuario: string, password_hash: string, email: string, rol: string) {
+export async function saveUserToDB(nombreUsuario: string, password_hash: string, email: string, rol: string, uidFirebase:string) {
   try {
     const [result] = await db.query(
-      'INSERT INTO Usuarios (NombreUsuario, password_hash, email, rol) VALUES (?, ?, ?, ?)',
-      [nombreUsuario, password_hash, email, rol]
+      'INSERT INTO Usuarios (NombreUsuario, password_hash, email, rol, uidFirebase) VALUES (?, ?, ?, ?, ?)',
+      [nombreUsuario, password_hash, email, rol, uidFirebase]
     );
     return result;
   } catch (error) {

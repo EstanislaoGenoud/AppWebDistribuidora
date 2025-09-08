@@ -1,10 +1,19 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { apiKeyMiddleware } from './apiKeyMiddleware';
-//import { firebaseAuthMiddleware } from './firebaseAuthMiddleware';
-export function authMiddleware(req: Request, res: Response, next: NextFunction) {
-  if(process.env.NODE_ENV === 'development'){
-    return apiKeyMiddleware(req, res, next);
+import { firebaseAuthMiddleware } from './firebaseAuthMiddleware';
+export  const authMiddleware:RequestHandler= async (
+  req,
+  res,
+  next 
+) => {
+  try{
+    if(process.env.NODE_ENV === 'development'){
+      apiKeyMiddleware(req, res, next);
   }else{
-    //return firebaseAuthMiddleware(req, res, next);
+      firebaseAuthMiddleware(req, res, next);
+  }
+  }catch(error){
+    console.error('Error en el middleware de autenticación:', error);
+    res.status(401).json({ message: 'NO AUTORIZADO' });
   }
 }
