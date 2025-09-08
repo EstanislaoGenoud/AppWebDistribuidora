@@ -9,7 +9,7 @@ interface Usuario extends RowDataPacket {
   rol: string;
 }
 // Funciones para interactuar con la base de datos relacionadas con los usuarios
-export async function saveUserToDB(nombreUsuario: string, password_hash: string, email: string, rol: string, uidFirebase:string) {
+export async function saveUserToDB(nombreUsuario: string, password_hash: string, email: string, rol: string, uidFirebase?:string) {
   try {
     const [result] = await db.query(
       'INSERT INTO Usuarios (NombreUsuario, password_hash, email, rol, uidFirebase) VALUES (?, ?, ?, ?, ?)',
