@@ -4,9 +4,9 @@ import * as accountProviderController from "../controllers/accountProviderContro
 const router=Router();
 
 router.get('/', accountProviderController.getAllAccountProvider);
-router.get('/:id', accountProviderController.getAccountProvider);
+router.get('/:legajoProv', accountProviderController.getAccountProvider);
 router.post('/', accountProviderController.createAccountProvider);
-router.put('/:id', accountProviderController.updateAccountProvider);
-router.delete('/:id', accountProviderController.deleteAccountProvider);
+router.put('/:legajoProv', accountProviderController.updateAccountProvider);
+router.delete('/:legajoProv', accountProviderController.deleteAccountProvider);
 
 export default router;

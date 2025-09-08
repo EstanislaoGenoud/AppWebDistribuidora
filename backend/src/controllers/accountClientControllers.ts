@@ -85,8 +85,8 @@ export const createAccountClient = async (
 };
 // Actualizar cuenta
 export const updateAccountClient = (req: Request, res: Response) => {
-  const idCuenta = String(req.params.idCliente);
-  if ((idCuenta==undefined) || isNaN(Number(idCuenta))) {
+  const idCliente = String(req.params.idCliente);
+  if (!idCliente) {
     res.status(400).json({ message: "ID de cuenta inválido" });
     return;
   }
@@ -95,7 +95,7 @@ export const updateAccountClient = (req: Request, res: Response) => {
     res.status(400).json({ message: "Faltan datos para actualizar" });
     return;
   }
-  updateAccountClientInDB(idCuenta, totalPagado, saldoActual, new Date())
+  updateAccountClientInDB(idCliente, totalPagado, saldoActual, new Date())
     .then(() => {
       res.json({ message: "Cuenta del cliente actualizada exitosamente" });
     })
