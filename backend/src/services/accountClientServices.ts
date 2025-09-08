@@ -3,7 +3,7 @@ import { RowDataPacket } from 'mysql2';
 
 interface CuentaCliente extends RowDataPacket {
   idCuenta: number;
-  idCliente: number;
+  idCliente: string;
   totalPagado: number;
   saldoActual: number;
   created_at: Date;
@@ -11,7 +11,7 @@ interface CuentaCliente extends RowDataPacket {
 }
 // Guardar una nueva cuenta de cliente
 export async function saveAccountClientToDB(
-  idCliente: number,
+  idCliente: string,
   totalPagado: number,
   saldoActual: number,
   fechaPago: Date
@@ -45,9 +45,10 @@ export async function getAllAccountClientsFromDB() {
   }
 }
 // Obtener una cuenta por ID
-export async function getAccountClientByIdFromDB(idCuenta: number) {
+export async function getAccountClientByIdFromDB(idCliente: string) {
   try {
-    const [rows] = await db.query<CuentaCliente[]>('SELECT * FROM CuentaCliente WHERE idCuenta = ?', [idCuenta]);
+    const [rows] = await db.query<CuentaCliente[]>('SELECT * FROM CuentaCliente WHERE idCliente LIKE ?', [idCliente]);
+    console.log("Filas encontradas: ", rows);
     return rows[0];
   } catch (error) {
     console.error('Error fetching account client by ID:', error);
@@ -56,7 +57,7 @@ export async function getAccountClientByIdFromDB(idCuenta: number) {
 }
 // Actualizar cuenta
 export async function updateAccountClientInDB(
-  idCuenta: number,
+  idCliente: string,
   totalPagado: number,
   saldoActual: number,
   fechaPago: Date
@@ -64,7 +65,7 @@ export async function updateAccountClientInDB(
   try {
     const [result] = await db.query(
       'UPDATE CuentaCliente SET totalPagado = ?, saldoActual = ?, FechaDePago = ?,updated_at = NOW() WHERE idCuenta = ?',
-      [totalPagado, saldoActual, idCuenta, fechaPago]
+      [totalPagado, saldoActual, idCliente, fechaPago]
     );
     return result;
   } catch (error) {
@@ -73,9 +74,9 @@ export async function updateAccountClientInDB(
   }
 }
 // Eliminar cuenta
-export async function deleteAccountClientFromDB(idCuenta: number) {
+export async function deleteAccountClientFromDB(idCliente: string) {
   try {
-    const [result] = await db.query('DELETE FROM CuentaCliente WHERE idCuenta = ?', [idCuenta]);
+    const [result] = await db.query('DELETE FROM CuentaCliente WHERE idCliente = ?', [idCliente]);
     return result;
   } catch (error) {
     console.error('Error deleting account client:', error);

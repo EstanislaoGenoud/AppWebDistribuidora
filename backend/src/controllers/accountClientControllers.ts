@@ -20,12 +20,12 @@ export const getAllAccountClient = async (req: Request, res: Response) => {
 };
 // Obtener una cuenta por ID
 export const getAccountClient = (req: Request, res: Response) => {
-  const idCuenta = Number(req.params.idCuenta);
-  if (isNaN(idCuenta)) {
+  const idCliente = req.params.idCliente?.trim();
+  if (!idCliente) {
     res.status(400).json({ message: "ID de cuenta inválido" });
     return;
   }
-  getAccountClientByIdFromDB(idCuenta)
+  getAccountClientByIdFromDB(idCliente)
     .then((accountClient) => {
       if (!accountClient) {
         res.status(404).json({ message: "Cuenta de cliente no encontrada" });
@@ -85,8 +85,8 @@ export const createAccountClient = async (
 };
 // Actualizar cuenta
 export const updateAccountClient = (req: Request, res: Response) => {
-  const idCuenta = Number(req.params.idCuenta);
-  if (isNaN(idCuenta)) {
+  const idCuenta = String(req.params.idCliente);
+  if ((idCuenta==undefined) || isNaN(Number(idCuenta))) {
     res.status(400).json({ message: "ID de cuenta inválido" });
     return;
   }
@@ -108,12 +108,12 @@ export const updateAccountClient = (req: Request, res: Response) => {
 };
 // Eliminar cuenta
 export const deleteAccountClient = (req: Request, res: Response) => {
-  const idCuenta = Number(req.params.idCuenta);
-  if (isNaN(idCuenta)) {
+  const idCliente = String(req.params.idCliente);
+  if ((idCliente==undefined) || isNaN(Number(idCliente))) {
     res.status(400).json({ message: "ID de cuenta inválido" });
     return;
   }
-  deleteAccountClientFromDB(idCuenta)
+  deleteAccountClientFromDB(idCliente)
     .then(() => {
       res.json({ message: "Cuenta del cliente eliminada exitosamente" });
     })

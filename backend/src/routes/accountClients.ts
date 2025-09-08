@@ -4,9 +4,9 @@ import * as accountClientController from "../controllers/accountClientController
 const router=Router();
 
 router.get('/', accountClientController.getAllAccountClient);
-router.get('/:id', accountClientController.getAccountClient);
+router.get('/:idCliente', accountClientController.getAccountClient);
 router.post('/', accountClientController.createAccountClient);
-router.put('/:id', accountClientController.updateAccountClient);
-router.delete('/:id', accountClientController.deleteAccountClient);
+router.put('/:idCliente', accountClientController.updateAccountClient);
+router.delete('/:idCliente', accountClientController.deleteAccountClient);
 
 export default router;
