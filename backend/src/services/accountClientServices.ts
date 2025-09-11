@@ -48,7 +48,6 @@ export async function getAllAccountClientsFromDB() {
 export async function getAccountClientByIdFromDB(idCliente: string) {
   try {
     const [rows] = await db.query<CuentaCliente[]>('SELECT * FROM CuentaCliente WHERE idCliente LIKE ?', [idCliente]);
-    console.log("Filas encontradas: ", rows);
     return rows[0];
   } catch (error) {
     console.error('Error fetching account client by ID:', error);
