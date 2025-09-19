@@ -31,7 +31,6 @@ app.use('/api/employed', employedRoutes);
 app.use('/api/accountClient', accountClientRoutes);
 app.use('/api/accountProvider', accountProviderRoutes);
 app.use('/api/sales', salesRoutes);
-//Prueba de inventario
 app.use('/api/inventory', inventoryRoutes);
 // Starting the server
 app.listen(3000, () => {
