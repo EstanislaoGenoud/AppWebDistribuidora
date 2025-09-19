@@ -13,6 +13,7 @@ import salesRoutes from './routes/sales';
 import inventoryRoutes from './routes/inventories';
 
 const app=express();
+const PORT=  process.env.PORT || 3000;
 app.use(express.json());
 app.get('/',  (req, res) => {
 	res.send('Welcome to the API: Use /api/users, /api/products, or /api/clients to access the respective endpoints.');
@@ -33,6 +34,6 @@ app.use('/api/accountProvider', accountProviderRoutes);
 app.use('/api/sales', salesRoutes);
 app.use('/api/inventory', inventoryRoutes);
 // Starting the server
-app.listen(3000, () => {
-  console.log('Servidor corriendo en puerto 3000');
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
