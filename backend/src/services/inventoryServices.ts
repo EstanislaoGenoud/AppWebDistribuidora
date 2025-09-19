@@ -30,14 +30,51 @@ export async function getInventoryByIdFromDB(idProduct:string){
     throw error;
   }
 }
-export async function updateInventoryInDB(idProduct:string, stockActual:number){
+export async function historialRegister(idProduct:string, tipo:'Entrada'|'Salida', motivo:string, cantidad:number){
   try{
-    const [result]=await db.query('UPDATE Inventario SET stockActual=? WHERE idProduct=?',[stockActual, idProduct]);
-    const [historialResult]=await db.query('INSERT INTO Historial (idProduct, tipo, fecha, motivo, cantidad) VALUES (?, ?, NOW(), ?, ?)', [idProduct, stockActual>0?'Entrada':'Salida', 'Ajuste manual', Math.abs(stockActual)]);
-    // FALTA INSERTAR EN EL HISTORIAL
-    return result;
+    await db.query('INSERT INTO HistorialInventario (idProduct, tipo, fecha, motivo, cantidad) VALUES (?, ?, NOW(), ?, ?)',
+      [idProduct, tipo, motivo, cantidad]);
+  }catch(error){
+    console.error('Error inserting into inventory history:', error);
+    throw error;
+  }
+}
+export async function updateInventoryInDB(idProduct:string, nuevoStock:number){
+  try{
+    const [rows]=await db.query<Inventario[]>('SELECT StockActual FROM Inventario WHERE idProduct=?',[idProduct]);
+    if(rows.length===0){
+      throw new Error('Producto no encontrado en el inventario');
+    }
+    const stockAnterior=rows[0].stockActual;
+    await db.query('UPDATE Inventario SET StockActual=? WHERE idProduct=?',[nuevoStock, idProduct]);
+    const diferencia=nuevoStock-stockAnterior;
+    if(diferencia!==0){
+      const tipo=diferencia>0?'Entrada':'Salida';
+      await historialRegister(idProduct, tipo, 'Ajuste manual', Math.abs(diferencia));
+    }
+    return{succes:true};
   }catch(error){
     console.error('Error updating inventory in database:', error);
+    throw error;
+  }
+}
+export async function descontarPorVenta(idProduct:string, cantidadVendida:number){
+  try{
+    await db.query('UPDATE Inventario SET StockActual=StockActual-? WHERE idProduct=?',[cantidadVendida, idProduct]);
+    await historialRegister(idProduct, 'Salida', 'Venta', cantidadVendida);
+    return{succes:true};
+  }catch(error){
+    console.error('Error deducting inventory for sale:', error);
+    throw error;
+  }
+}
+export async function aumentarPorCompra(idProduct:string, cantidadComprada:number){
+  try{
+    await db.query('UPDATE Inventario SET StockActual=StockActual+? WHERE idProduct=?',[cantidadComprada, idProduct]);
+    await historialRegister(idProduct, 'Entrada', 'Compra', cantidadComprada);
+    return{succes:true};
+  }catch(error){
+    console.error('Error increasing inventory for purchase:', error);
     throw error;
   }
 }
