@@ -4,13 +4,12 @@ interface Inventario extends RowDataPacket{
   idProduct:string;
   stockActual:number;
 }
-interface historial extends RowDataPacket{
-  idHistorial:number;
+type TipoOperacion='ajuste'|'venta'|'compra'|'devolucion';
+interface MovimientoInventario{
   idProduct:string;
-  tipo:string;
-  fecha:Date;
-  motivo:string;
+  tipo:TipoOperacion
   cantidad:number;
+  motivo?:string;
 }
 export async function getInventoryFromDB(){
   try{
@@ -39,42 +38,73 @@ export async function historialRegister(idProduct:string, tipo:'Entrada'|'Salida
     throw error;
   }
 }
-export async function updateInventoryInDB(idProduct:string, nuevoStock:number){
-  try{
-    const [rows]=await db.query<Inventario[]>('SELECT StockActual FROM Inventario WHERE idProduct=?',[idProduct]);
-    if(rows.length===0){
-      throw new Error('Producto no encontrado en el inventario');
+export async function procesarMovimiento({
+  idProduct,
+  tipo,
+  cantidad,
+  motivo = '',
+}: MovimientoInventario) {
+  try {
+    const [rows] = await db.query<Inventario[]>(
+      'SELECT stockActual FROM Inventario WHERE idProduct=?',
+      [idProduct]
+    );
+    if (rows.length === 0) throw new Error('Producto no encontrado');
+    let stockActual = rows[0].stockActual;
+
+    let nuevoStock = stockActual;
+    let tipoHistorial: 'Entrada' | 'Salida' = 'Entrada';
+    let motivoFinal = motivo;
+
+    switch (tipo) {
+      case 'ajuste':
+        nuevoStock = cantidad; 
+        if (nuevoStock > stockActual) {
+          tipoHistorial = 'Entrada';
+        } else {
+          tipoHistorial = 'Salida';
+        }
+        motivoFinal = motivo || 'Ajuste manual';
+        break;
+
+      case 'venta':
+        nuevoStock = stockActual - cantidad;
+        tipoHistorial = 'Salida';
+        motivoFinal = motivo || 'Venta';
+        break;
+
+      case 'compra':
+        nuevoStock = stockActual + cantidad;
+        tipoHistorial = 'Entrada';
+        motivoFinal = motivo || 'Compra';
+        break;
+
+      case 'devolucion':
+        nuevoStock = stockActual + cantidad;
+        tipoHistorial = 'Entrada';
+        motivoFinal = motivo || 'Devolución de cliente';
+        break;
+
+      default:
+        throw new Error(`Tipo de operación no soportada: ${tipo}`);
     }
-    const stockAnterior=rows[0].stockActual;
-    await db.query('UPDATE Inventario SET StockActual=? WHERE idProduct=?',[nuevoStock, idProduct]);
-    const diferencia=nuevoStock-stockAnterior;
-    if(diferencia!==0){
-      const tipo=diferencia>0?'Entrada':'Salida';
-      await historialRegister(idProduct, tipo, 'Ajuste manual', Math.abs(diferencia));
+
+    if (nuevoStock < 0) throw new Error('El stock no puede ser negativo');
+
+    await db.query('UPDATE Inventario SET stockActual=? WHERE idProduct=?', [
+      nuevoStock,
+      idProduct,
+    ]);
+    const diferencia =
+      tipo === 'ajuste' ? Math.abs(nuevoStock - stockActual) : cantidad;
+
+    if (diferencia > 0) {
+      await historialRegister(idProduct, tipoHistorial, motivoFinal, diferencia);
     }
-    return{succes:true};
-  }catch(error){
-    console.error('Error updating inventory in database:', error);
-    throw error;
-  }
-}
-export async function descontarPorVenta(idProduct:string, cantidadVendida:number){
-  try{
-    await db.query('UPDATE Inventario SET StockActual=StockActual-? WHERE idProduct=?',[cantidadVendida, idProduct]);
-    await historialRegister(idProduct, 'Salida', 'Venta', cantidadVendida);
-    return{succes:true};
-  }catch(error){
-    console.error('Error deducting inventory for sale:', error);
-    throw error;
-  }
-}
-export async function aumentarPorCompra(idProduct:string, cantidadComprada:number){
-  try{
-    await db.query('UPDATE Inventario SET StockActual=StockActual+? WHERE idProduct=?',[cantidadComprada, idProduct]);
-    await historialRegister(idProduct, 'Entrada', 'Compra', cantidadComprada);
-    return{succes:true};
-  }catch(error){
-    console.error('Error increasing inventory for purchase:', error);
+
+    return { success: true, idProduct, stockAnterior: stockActual, stockNuevo: nuevoStock };
+  } catch (error) {
+    console.error('Error procesando movimiento de inventario:', error);
     throw error;
   }
 }
