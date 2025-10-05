@@ -6,3 +6,5 @@
 
 # Ignora variables de entorno
 **/.env
+# Firebase credentials
+src/config/serviceAccountKey.json

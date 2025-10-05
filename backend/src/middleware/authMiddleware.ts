@@ -7,6 +7,10 @@ export  const authMiddleware:RequestHandler= async (
   next 
 ) => {
   try{
+    // Allow preflight requests to pass through without authentication
+    if (req.method === 'OPTIONS') {
+      return next();
+    }
     if(process.env.NODE_ENV === 'development'){
       apiKeyMiddleware(req, res, next);
   }else{

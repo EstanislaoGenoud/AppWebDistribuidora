@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 //import { apiKeyMiddleware } from './middleware/apiKeyMiddleware';
 import { authMiddleware } from './middleware/authMiddleware';
 // Importing routes
@@ -13,13 +14,18 @@ import salesRoutes from './routes/sales';
 import inventoryRoutes from './routes/inventories';
 
 const app=express();
-const PORT=  process.env.PORT || 3000;
+// Ensure PORT is a number for TypeScript and Node listen overloads
+const PORT: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+// Enable CORS for all origins (adjust origin in production as needed)
+app.use(cors());
+
 app.use(express.json());
 app.get('/',  (req, res) => {
 	res.send('Welcome to the API: Use /api/users, /api/products, or /api/clients to access the respective endpoints.');
 });
 
-// Middleware to handle API key authentication
+// Middleware to handle API key / Firebase authentication
+// Important: place CORS and any public routes before authMiddleware so preflight requests are not blocked
 app.use(authMiddleware);
 
 
@@ -34,6 +40,7 @@ app.use('/api/accountProvider', accountProviderRoutes);
 app.use('/api/sales', salesRoutes);
 app.use('/api/inventory', inventoryRoutes);
 // Starting the server
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
+
+app.listen(PORT, '0.0.0.0', () => {
+	console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
