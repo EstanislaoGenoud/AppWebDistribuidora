@@ -15,7 +15,7 @@ import inventoryRoutes from './routes/inventories';
 
 const app=express();
 // Ensure PORT is a number for TypeScript and Node listen overloads
-const PORT: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+const PORT = Number(process.env.PORT) || 8080;
 // Enable CORS for all origins (adjust origin in production as needed)
 app.use(cors());
 
