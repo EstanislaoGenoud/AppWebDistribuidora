@@ -36,7 +36,7 @@ export async function createVenta(
       await connection.query(
         `INSERT INTO DetalleVenta (idVenta, idProduct, cantidad, precioUnitario, subTotal, created_at, updated_at) 
         VALUES (?, ?, ?, ?, ?, NOW(), NOW())`,
-        [idVenta, det.idProduct, det.cantidad, det.precioUnitario, subTotal]
+        [idVenta, det.cantidad, det.idProduct, det.precioUnitario, subTotal]
       );
 
       // Movimiento de inventario (EGRESO)

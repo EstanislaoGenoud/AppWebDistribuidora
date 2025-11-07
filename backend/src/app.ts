@@ -2,7 +2,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
 import cors from 'cors';
-//import { apiKeyMiddleware } from './middleware/apiKeyMiddleware';
 import { authMiddleware } from './middleware/authMiddleware';
 // Importing routes
 import productRoutes from './routes/products';
@@ -28,19 +27,18 @@ app.get('/',  (req, res) => {
 
 // Middleware to handle API key / Firebase authentication
 // Important: place CORS and any public routes before authMiddleware so preflight requests are not blocked
-app.use(authMiddleware);
 
 
 // Using routes
-app.use('/api/users', user);
-app.use('/api/products', productRoutes);
-app.use('/api/providers', providerRoutes);
-app.use('/api/clients', clientRoutes);
-app.use('/api/employed', employedRoutes);
-app.use('/api/accountClient', accountClientRoutes);
-app.use('/api/accountProvider', accountProviderRoutes);
-app.use('/api/sales', salesRoutes);
-app.use('/api/inventory', inventoryRoutes);
+app.use('/api/users', authMiddleware, user);
+app.use('/api/products', authMiddleware, productRoutes);
+app.use('/api/providers', authMiddleware, providerRoutes);
+app.use('/api/clients', authMiddleware, clientRoutes);
+app.use('/api/employed', authMiddleware, employedRoutes);
+app.use('/api/accountClient', authMiddleware, accountClientRoutes);
+app.use('/api/accountProvider', authMiddleware, accountProviderRoutes);
+app.use('/api/sales', authMiddleware, salesRoutes);
+app.use('/api/inventory', authMiddleware, inventoryRoutes);
 // Starting the server
 
 app.listen(PORT, '0.0.0.0', () => {

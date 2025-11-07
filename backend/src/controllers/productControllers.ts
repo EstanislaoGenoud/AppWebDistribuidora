@@ -122,12 +122,12 @@ export const updateProduct =async (req: Request, res: Response) => {
     }
     await updateProductInDB(
       id,
-      idProduct,
-      legajo,
       nombre,
       marca,
       categoria,
       precioCompra,
+      idUnidad,
+      precioVenta
     );
     res.status(200).json({ message: "Producto actualizado correctamente" });
   } catch (error) {

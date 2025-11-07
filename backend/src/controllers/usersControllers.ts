@@ -124,8 +124,6 @@ export const updateUser=(req:Request, res:Response)=>{
       console.error('Error al actualizar el usuario:', error);
       res.status(500).json({ message: 'Error al actualizar el usuario', error });
     });
-
-  res.json({message: 'Actualizar un usuario'});
 }
 // Eliminar un usuario
 export const deleteUser=(req:Request, res:Response)=>{

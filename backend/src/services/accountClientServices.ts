@@ -56,7 +56,7 @@ export async function getAccountClientByIdFromDB(idCliente: string) {
 }
 // Actualizar cuenta
 export async function updateAccountClientInDB(
-  idCliente: string,
+  idCuenta: string,
   totalPagado: number,
   saldoActual: number,
   fechaPago: Date
@@ -64,7 +64,7 @@ export async function updateAccountClientInDB(
   try {
     const [result] = await db.query(
       'UPDATE CuentaCliente SET totalPagado = ?, saldoActual = ?, FechaDePago = ?,updated_at = NOW() WHERE idCuenta = ?',
-      [totalPagado, saldoActual, idCliente, fechaPago]
+      [totalPagado, saldoActual, fechaPago, idCuenta]
     );
     return result;
   } catch (error) {

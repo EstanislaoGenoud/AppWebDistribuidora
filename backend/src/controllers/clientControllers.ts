@@ -91,7 +91,6 @@ export const updateClient=(req:Request, res:Response)=>{
       console.error('Error al actualizar el cliente:', error);
       res.status(500).json({ message: 'Error al actualizar el cliente', error });
     });
-  res.json({message: 'Actualizar un cliente'});
 }
 // Eliminar un cliente por ID
 export const deleteClient=(req:Request, res:Response)=>{
