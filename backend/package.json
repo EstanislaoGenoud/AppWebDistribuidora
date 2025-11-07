@@ -1,13 +1,12 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/app.js",
   "scripts": {
   "test": "echo \"Error: no test specified\" && exit 1",
   "build": "tsc",
   "start": "node dist/app.js",
   "start:prod": "npm run build && node dist/app.js",
-  "postinstall": "npm run build",
   "dev": "ts-node-dev --respawn --transpile-only src/app.ts"
   },
   "keywords": [],

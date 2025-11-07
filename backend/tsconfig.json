@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
-    "outDir": "./dist", // Aquí se indica que los archivos js generados irán a la carpeta 'dist'
-    "target": "ES6",
+    "outDir": "./dist",
+    "rootDir": "./src",  // ✅ Añade esto
+    "target": "ES2020",  // ✅ Usa ES2020 o superior
     "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true  // ✅ Permite importar JSON
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*"]
 }
