@@ -16,7 +16,7 @@ import inventoryRoutes from './routes/inventories';
 
 const app=express();
 // Ensure PORT is a number for TypeScript and Node listen overloads
-const PORT = Number(process.env.PORT) || 8080;
+const PORT = process.env.PORT ? Number(process.env.PORT) : 8080;
 // Enable CORS for all origins (adjust origin in production as needed)
 app.use(cors());
 
@@ -42,5 +42,6 @@ app.use('/api/inventory', authMiddleware, inventoryRoutes);
 // Starting the server
 
 app.listen(PORT, '0.0.0.0', () => {
-	console.log(`Servidor corriendo en el puerto ${PORT}`);
+  console.log(`✅ Servidor corriendo en el puerto ${PORT}`);
+  console.log(`🌐 URL base: http://localhost:${PORT}/`);
 });
