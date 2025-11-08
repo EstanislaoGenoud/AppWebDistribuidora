@@ -1,0 +1,23 @@
+# node_modules de la raíz (donde viven todas las dependencias)
+node_modules/
+
+# Dependencias de subproyectos (si alguien las instala por error)
+backend/node_modules/
+
+# Build outputs
+backend/dist/
+backend/build/
+
+# Environment (protege tus claves)
+.env
+.env.local
+*.env
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS generated files
+.DS_Store
+Thumbs.db
