@@ -6,5 +6,12 @@
 
 # Ignora variables de entorno
 **/.env
+**/.env.local
+**/.env.production
+**/.env.test
+**/.env.example
+# Ignora logs
+**/logs/*.log
+npm-debug.log*
 # Firebase credentials
 src/config/serviceAccountKey.json

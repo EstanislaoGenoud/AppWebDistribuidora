@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
+
 import cors from 'cors';
 import { authMiddleware } from './middleware/authMiddleware';
 // Importing routes
@@ -14,6 +15,7 @@ import accountProviderRoutes from './routes/accountProviders';
 import salesRoutes from './routes/sales';
 import inventoryRoutes from './routes/inventories';
 
+import { swaggerUi, swaggerSpec } from './config/swagger';
 const app=express();
 // Ensure PORT is a number for TypeScript and Node listen overloads
 const PORT = process.env.PORT ? Number(process.env.PORT) : 8080;
@@ -40,8 +42,10 @@ app.use('/api/accountProvider', authMiddleware, accountProviderRoutes);
 app.use('/api/sales', authMiddleware, salesRoutes);
 app.use('/api/inventory', authMiddleware, inventoryRoutes);
 // Starting the server
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ Servidor corriendo en el puerto ${PORT}`);
   console.log(`🌐 URL base: http://localhost:${PORT}/`);
+  console.log(`📘 Documentación Swagger: http://localhost:${PORT}/api-docs`);
 });
